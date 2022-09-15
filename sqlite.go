@@ -1,7 +1,6 @@
 package sqlite
 
 import (
-	"context"
 	"database/sql"
 	"strconv"
 	"strings"
@@ -23,10 +22,11 @@ type Dialector struct {
 	DriverName string
 	DSN        string
 	Conn       gorm.ConnPool
+	MockDb     *sql.DB
 }
 
-func Open(dsn string) gorm.Dialector {
-	return &Dialector{DSN: dsn}
+func Open(mockDb *sql.DB) gorm.Dialector {
+	return &Dialector{MockDb: mockDb}
 }
 
 func (dialector Dialector) Name() string {
@@ -41,17 +41,17 @@ func (dialector Dialector) Initialize(db *gorm.DB) (err error) {
 	if dialector.Conn != nil {
 		db.ConnPool = dialector.Conn
 	} else {
-		conn, err := sql.Open(dialector.DriverName, dialector.DSN)
-		if err != nil {
-			return err
-		}
-		db.ConnPool = conn
+		// conn, err := sql.Open(dialector.DriverName, dialector.DSN)
+		// if err != nil {
+		// 	return err
+		// }
+		db.ConnPool = dialector.MockDb
 	}
 
 	var version string
-	if err := db.ConnPool.QueryRowContext(context.Background(), "select sqlite_version()").Scan(&version); err != nil {
-		return err
-	}
+	// if err := db.ConnPool.QueryRowContext(context.Background(), "select sqlite_version()").Scan(&version); err != nil {
+	// 	return err
+	// }
 	// https://www.sqlite.org/releaselog/3_35_0.html
 	if compareVersion(version, "3.35.0") >= 0 {
 		callbacks.RegisterDefaultCallbacks(db, &callbacks.Config{

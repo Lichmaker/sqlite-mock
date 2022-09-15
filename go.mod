@@ -1,4 +1,4 @@
-module gorm.io/driver/sqlite
+module github.com/lichmaker/sqlite-mock
 
 go 1.14
 
