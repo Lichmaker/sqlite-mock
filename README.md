@@ -1,7 +1,7 @@
 # GORM Sqlite Mock Driver
 
 ## DEMO
-
+https://github.com/Lichmaker/gorm-sqlite-sqlmock-demo
 
 ## WHY
 自从升级到 `gorm v2` 之后， `sqlite` 使用 `gorm` 时如下：
